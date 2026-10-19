@@ -40,6 +40,20 @@ on `theorem_4_1` and `erdos_907` reports only `propext`, `Classical.choice` and
 `Quot.sound`. It was produced with the Aristotle prover from Section 4 of
 arXiv:2604.06609 and rebuilt in the Aristotle environment.
 
+## Verification
+
+- Built and axiom-checked in the Aristotle environment with the pinned toolchain
+  (`leanprover/lean4:v4.28.0`, Mathlib `v4.28.0`).
+- `#print axioms theorem_4_1` and `#print axioms erdos_907` report only
+  `propext`, `Classical.choice`, `Quot.sound`; the sources contain no `sorry`,
+  `admit`, `axiom` or `@[implemented_by]`.
+- Portability check: a cross-compilation against Lean `v4.35.0-rc3` / Mathlib
+  `v4.35.0-rc3` compiles the whole development up to two Mathlib API drifts
+  (`List.count_eq_countP` now uses `==` rather than `decide`, and
+  `SimpleGraph.IsCycle` now exposes `toSubgraph.neighborSet` instead of
+  `p.edges`). These are library changes, not mathematical gaps; the pinned
+  version above is the one that was built and audited.
+
 ## Build
 
 ```bash
@@ -77,5 +91,6 @@ in three representations:
 - Mathematical solution: Alexeev, Putterman, Sawhney, Sellke, Valiant
   (OpenAI), arXiv:2604.06609, Section 4.
 - Lean formalization: produced for this repository (see commit history).
+
 
 
