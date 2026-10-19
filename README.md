@@ -32,6 +32,14 @@ four non-attachment vertices of every leaf block.
 | `verification/verify_section4b.py` | independent computational check of the construction (K₄-free, χ = 4, 2-degeneracy after edge deletion, chord bound) |
 | `lean-toolchain`, `lakefile.toml`, `lake-manifest.json` | pinned Lean/Mathlib toolchain |
 
+## Status
+
+The formalization is **complete**: `RequestProject/Main.lean` (1225 lines) and
+`RequestProject/CycleCut.lean` (212 lines), no `sorry`/`admit`, and `#print axioms`
+on `theorem_4_1` and `erdos_907` reports only `propext`, `Classical.choice` and
+`Quot.sound`. It was produced with the Aristotle prover from Section 4 of
+arXiv:2604.06609 and rebuilt in the Aristotle environment.
+
 ## Build
 
 ```bash
@@ -69,4 +77,5 @@ in three representations:
 - Mathematical solution: Alexeev, Putterman, Sawhney, Sellke, Valiant
   (OpenAI), arXiv:2604.06609, Section 4.
 - Lean formalization: produced for this repository (see commit history).
+
 
