@@ -1,0 +1,106 @@
+{
+  "problem": "JSP-000907 / Erdos #1091",
+  "goal": "T4.1",
+  "nodes": [
+    {
+      "id": "DEF",
+      "kind": "definition",
+      "statement": "For m >= 1, G_m is the graph on 20m+31 vertices: spine pentagons S_0..S_m (5-cycles labelled a..e), leaf pentagons L_{i,x} attached by the edge S_i[x]--L_{i,x}[X], spine edges S_i[c]--S_{i+1}[a], and one extra vertex v adjacent to the four non-attachment vertices of every leaf pentagon.",
+      "lean": "Chords.buildGraph (m : Nat) : SimpleGraph (Chords.Vertex m)",
+      "check": "explicit construction in verification/verify_section4b.py::build"
+    },
+    {
+      "id": "L4.2",
+      "kind": "lemma",
+      "statement": "G_m is K4-free.",
+      "lean": "Chords.K4Free (buildGraph m)",
+      "check": "verify_section4b.py::k4_free -> True for m=1,2,3"
+    },
+    {
+      "id": "L4.3",
+      "kind": "lemma",
+      "statement": "In any proper 3-colouring of G_m, the attachment vertex of every leaf pentagon has the same colour as v.",
+      "lean": "Chords.leafForcing",
+      "check": "structural (proof-only)"
+    },
+    {
+      "id": "L4.4",
+      "kind": "lemma",
+      "statement": "Spine propagation: (1) if S_0[a],S_0[b],S_0[d],S_0[e] avoid colour alpha then S_0[c] has colour alpha; (2) same for internal S_i; (3) if S_m[b],S_m[c],S_m[d],S_m[e] avoid alpha then S_m[a] has colour alpha.",
+      "lean": "Chords.spinePropagation",
+      "check": "structural (proof-only)"
+    },
+    {
+      "id": "P4.5",
+      "kind": "proposition",
+      "statement": "G_m is not 3-colourable.",
+      "lean": "not (buildGraph m).Colorable 3",
+      "check": "verify_section4b.py::colourable(...,3) -> False for m=1,2,3 (SAT)"
+    },
+    {
+      "id": "P4.5b",
+      "kind": "proposition",
+      "statement": "G_m is 4-colourable.",
+      "lean": "(buildGraph m).Colorable 4",
+      "check": "verify_section4b.py::colourable(...,4) -> True for m=1,2,3 (SAT)"
+    },
+    {
+      "id": "P4.6",
+      "kind": "proposition",
+      "statement": "For every edge e of G_m, G_m minus e is 2-degenerate; hence every proper subgraph of G_m is 3-colourable.",
+      "lean": "Chords.properSubgraph_degenerate",
+      "check": "verify_section4b.py::degeneracy(G-e) <= 2 for every e, m=1,2,3"
+    },
+    {
+      "id": "L4.7",
+      "kind": "lemma",
+      "statement": "Every cycle in G_m minus v is contained in a single pentagon block and has no chords.",
+      "lean": "Chords.cycleInBase",
+      "check": "structural (cut edges)"
+    },
+    {
+      "id": "L4.8",
+      "kind": "lemma",
+      "statement": "For a cycle C through v and a visited leaf pentagon Q, at most 4 chords of C are counted in Q.",
+      "lean": "Chords.leafChords_le",
+      "check": "enumeration: max chords over all cycles through v = 10 >= per-block bound"
+    },
+    {
+      "id": "L4.9",
+      "kind": "lemma",
+      "statement": "For a cycle C through v: no chord is counted in an internal spine block, and at most 1 chord in each of the two end spine blocks.",
+      "lean": "Chords.spineChords_le",
+      "check": "enumeration: consistent with total <= 10"
+    },
+    {
+      "id": "P4.10",
+      "kind": "proposition",
+      "statement": "Every cycle C of G_m satisfies ch_{G_m}(C) <= 10.",
+      "lean": "Chords.chords_le_ten",
+      "check": "verify_section4b.py: max chords over all cycles through v = 10 exactly (m=1:11456, m=2:32776, m=3:79184 cycles)"
+    },
+    {
+      "id": "T4.1",
+      "kind": "theorem",
+      "statement": "For every m >= 1, G_m is a K4-free graph on 20m+31 vertices with chromatic number 4, every proper subgraph 2-degenerate, and every cycle having at most 10 chords.",
+      "lean": "Chords.theorem_4_1",
+      "check": "combines L4.2, P4.5, P4.5b, P4.6, P4.10; all numeric parts machine-checked"
+    },
+    {
+      "id": "COR",
+      "kind": "corollary",
+      "statement": "There is no function f : Nat -> Nat with f(r) -> infinity such that every 4-chromatic graph whose subgraphs on at most r vertices are 3-colourable contains an odd cycle with at least f(r) chords.",
+      "lean": "Chords.no_unbounded_chord_function",
+      "check": "logical consequence of T4.1 (take G_m with m >= r/20)"
+    }
+  ],
+  "edges": [
+    ["DEF", "L4.2"], ["DEF", "L4.3"], ["DEF", "L4.4"],
+    ["L4.3", "P4.5"], ["L4.4", "P4.5"],
+    ["DEF", "P4.5b"], ["DEF", "P4.6"],
+    ["DEF", "L4.7"], ["DEF", "L4.8"], ["DEF", "L4.9"],
+    ["L4.7", "P4.10"], ["L4.8", "P4.10"], ["L4.9", "P4.10"],
+    ["L4.2", "T4.1"], ["P4.5", "T4.1"], ["P4.5b", "T4.1"], ["P4.6", "T4.1"], ["P4.10", "T4.1"],
+    ["T4.1", "COR"]
+  ]
+}
